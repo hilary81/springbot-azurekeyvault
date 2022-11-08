@@ -1,14 +1,18 @@
 package uploadtodatabase.devs.service;
 
+import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobClient;
 
 
 import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.models.BlobItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class AzureBlobService {
@@ -21,5 +25,15 @@ public class AzureBlobService {
 
         return multipartFile.getOriginalFilename();
 
+    }
+    public List<String> listBlobs(){
+
+        PagedIterable<BlobItem> items = blobContainerClient.listBlobs();
+
+        List<String> names = new ArrayList<>();
+        for (BlobItem item : items) {
+            names.add(item.getName());
+        }
+        return names;
     }
 }

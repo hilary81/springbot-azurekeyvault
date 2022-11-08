@@ -3,10 +3,7 @@ package uploadtodatabase.devs.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uploadtodatabase.devs.FileUpload;
 import uploadtodatabase.devs.FileUploadRepository;
@@ -14,6 +11,7 @@ import uploadtodatabase.devs.service.AzureBlobService;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 86000)
 @RestController
@@ -36,6 +34,13 @@ public class AzureBlobController {
         fileUploadRepository.save(fileUpload);
 
         return ResponseEntity.ok(fileName);
+    }
+    @GetMapping("/files")
+    public ResponseEntity<List<String>> getAllBlobs(){
+
+        List<String> items = azureBlobService.listBlobs();
+
+        return ResponseEntity.ok(items);
     }
 }
 
