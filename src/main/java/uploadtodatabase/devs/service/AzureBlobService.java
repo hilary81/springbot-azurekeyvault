@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class AzureBlobService {
 
     @Autowired
     BlobContainerClient blobContainerClient;
-    public String upload(MultipartFile multipartFile) throws IOException{
+    public String upload(@NotNull MultipartFile multipartFile) throws IOException{
          BlobClient blob = blobContainerClient.getBlobClient(multipartFile.getOriginalFilename());
         blob.upload(multipartFile.getInputStream(), multipartFile.getSize(), true);
 
@@ -35,5 +37,20 @@ public class AzureBlobService {
             names.add(item.getName());
         }
         return names;
+    }
+    public byte[] getFile(String fileName){
+
+        BlobClient blob = blobContainerClient.getBlobClient(fileName);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        blob.downloadStream(outputStream);
+        final byte[] bytes = outputStream.toByteArray();
+        return bytes;
+    }
+
+    public Boolean deleteBlob(String blobName){
+
+        BlobClient blob = blobContainerClient.getBlobClient(blobName);
+        blob.delete();
+        return true;
     }
 }
