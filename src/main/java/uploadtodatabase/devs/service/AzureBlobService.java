@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +39,13 @@ public class AzureBlobService {
         }
         return names;
     }
+
+    public Boolean deleteBlob(String blobName){
+
+        BlobClient blob = blobContainerClient.getBlobClient(blobName);
+        blob.delete();
+        return true;
+    }
     public byte[] getFile(String fileName){
 
         BlobClient blob = blobContainerClient.getBlobClient(fileName);
@@ -47,10 +55,4 @@ public class AzureBlobService {
         return bytes;
     }
 
-    public Boolean deleteBlob(String blobName){
-
-        BlobClient blob = blobContainerClient.getBlobClient(blobName);
-        blob.delete();
-        return true;
-    }
 }

@@ -25,6 +25,9 @@ public class FileUpload {
     @Column(name="File_Size")
     private Long fileSize;
 
+    @Column(name="File_Path")
+    private String filePath;
+
     public Integer getUserId() {
         return userId;
     }
@@ -63,5 +66,13 @@ public class FileUpload {
 
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
