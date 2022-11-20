@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 public class AzureBlobConfig {
 
-    @Value("${azure.storage.connection.string}")
+    @Value("${spring.azure.storage.connection.string}")
     private String connectionString;
     @Value("user4")
     private String containerName;

@@ -1,4 +1,0 @@
-azure:
-  storage:
-     connection:
-           string: DefaultEndpointsProtocol=https;AccountName=carrentelstorage;AccountKey=aWv8Xl8cGococ6sKNCr2gEagsgDPQeraTi64o950eOmArC+T6ywmrhuupW02ndH/HcJO+uVNgeKn+AStj03FpQ==;EndpointSuffix=core.windows.net
