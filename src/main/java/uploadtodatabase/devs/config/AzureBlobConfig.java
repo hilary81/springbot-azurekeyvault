@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 
 public class AzureBlobConfig {
 
     @Value("${spring.azure.storage.connection.string}")
     private String connectionString;
-    @Value("user4")
-    private String containerName;
+
 
     @Bean
     public BlobServiceClient blobServiceClient(){
@@ -25,13 +25,13 @@ public class AzureBlobConfig {
     }
     @Bean
     public BlobContainerClient blobContainerClient(){
-        BlobContainerClient blobContainerClient = blobServiceClient().getBlobContainerClient(containerName);
+        BlobContainerClient blobContainerClient = blobServiceClient().getBlobContainerClient("user2");
 
         if (blobContainerClient.exists()){
             System.out.println("container exist");
 
         }else{
-            blobServiceClient().createBlobContainer(containerName);
+            blobServiceClient().createBlobContainer("user2");
         }
         return blobContainerClient;
     }
