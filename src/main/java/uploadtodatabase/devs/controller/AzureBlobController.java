@@ -9,16 +9,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import uploadtodatabase.devs.exception.ResourceNotFoundException;
 import uploadtodatabase.devs.fileupload.FileUpload;
 import uploadtodatabase.devs.fileupload.FileUploadRepository;
+import uploadtodatabase.devs.exception.ResourceNotFoundException;
 import uploadtodatabase.devs.jobID.Job;
-
 import uploadtodatabase.devs.jobID.JobIdRepository;
 import uploadtodatabase.devs.service.AzureBlobService;
-
-
+import ws.schild.jave.EncoderException;
+import ws.schild.jave.InputFormatException;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.info.MultimediaInfo;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.io.IOException;
 import java.util.*;
 
@@ -37,22 +39,33 @@ public class AzureBlobController {
     @Autowired
     BlobContainerClient blobContainerClient;
 
+    public static MultimediaInfo getInfo(String videoUrl) throws MalformedURLException, EncoderException {
+        URL url = new URL(videoUrl);
+
+        try {
+            MultimediaObject multimediaObject = new MultimediaObject(url);
+            MultimediaInfo multimediaInfo = multimediaObject.getInfo();
+            return multimediaInfo;
+
+        } catch (InputFormatException e) {
+            e.printStackTrace();
+            return null;
+
+        }
+    }
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
-
-
-        Job job = new Job();
-        job.setFile_duration(2.789);
-        jobIdRepository.save(job);
-        String fileName = azureBlobService.upload(file);
-        FileUpload fileUpload = new FileUpload();
-        fileUpload.setFileName(fileName);
-        fileUpload.setFileType(file.getContentType());
-        fileUpload.setUploadDate(new Date());
-        fileUpload.setJobId(job.getId());
-        fileUpload.setFilePath(blobContainerClient.getBlobClient(fileName).getBlobUrl());
-        fileUploadRepository.save(fileUpload);
-        return ResponseEntity.ok(fileName);
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException, EncoderException {
+            Job job = new Job();
+            jobIdRepository.save(job);
+            String fileName = azureBlobService.upload(file);
+            FileUpload fileUpload = new FileUpload();
+            fileUpload.setFileName(fileName);
+            fileUpload.setFileType(file.getContentType());
+            fileUpload.setUploadDate(new Date());
+            fileUpload.setJobId(job.getId());
+            fileUpload.setFilePath(blobContainerClient.getBlobClient(fileName).getBlobUrl());
+            fileUploadRepository.save(fileUpload);
+            return ResponseEntity.ok(fileName);
     }
 
     @GetMapping("/files")
@@ -67,10 +80,13 @@ public class AzureBlobController {
                 .orElseThrow(() -> new ResourceNotFoundException("File not found for this id :: " + userId));
 
         fileUploadRepository.delete(fileUpload);
+
+        jobIdRepository.delete(jobIdRepository.getReferenceById(fileUpload.getJobId()));
+
         Map<String, Boolean> response = new HashMap<>();
+
         response.put("delete", Boolean.TRUE);
         return response;
-
     }
 
     @GetMapping(path = "/download/{name}")
@@ -85,6 +101,7 @@ public class AzureBlobController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).headers(headers).body(resource);
 
     }
+
 }
 
 

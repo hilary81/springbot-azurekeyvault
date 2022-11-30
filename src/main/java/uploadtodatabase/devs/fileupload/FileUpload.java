@@ -2,28 +2,26 @@ package uploadtodatabase.devs.fileupload;
 
 import javax.persistence.*;
 import java.util.Date;
-
 @Entity
-@Table(name ="file_upload2")
+@Table(name ="file_upload4", uniqueConstraints = @UniqueConstraint(columnNames = {"file_name", "file_path"}))
 public class FileUpload {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "client_id")
+    @Column(name = "client_id", nullable = false, unique = true)
     private Long userId;
 
-    @Column(name = "file_name")
+    @Column(name = "file_name", nullable = false, unique = true)
     private String fileName;
 
-    @Column(name="upload_date")
+    @Column(name="upload_date", nullable = false)
     private Date uploadDate;
 
-    @Column(name="File_Type")
+    @Column(name="file_type", nullable = false)
     private String fileType;
-    @Column(name="job_id")
+    @Column(name="job_id", nullable = false)
     private Long jobId;
 
-
-    @Column(name="File_Path")
+    @Column(name="file_path", nullable = false, unique = true)
     private String filePath;
 
     public Long getUserId() {
