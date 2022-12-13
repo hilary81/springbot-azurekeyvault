@@ -15,12 +15,6 @@ import uploadtodatabase.devs.exception.ResourceNotFoundException;
 import uploadtodatabase.devs.jobID.Job;
 import uploadtodatabase.devs.jobID.JobIdRepository;
 import uploadtodatabase.devs.service.AzureBlobService;
-import ws.schild.jave.EncoderException;
-import ws.schild.jave.InputFormatException;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.info.MultimediaInfo;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.io.IOException;
 import java.util.*;
 
@@ -39,22 +33,10 @@ public class AzureBlobController {
     @Autowired
     BlobContainerClient blobContainerClient;
 
-    public static MultimediaInfo getInfo(String videoUrl) throws MalformedURLException, EncoderException {
-        URL url = new URL(videoUrl);
 
-        try {
-            MultimediaObject multimediaObject = new MultimediaObject(url);
-            MultimediaInfo multimediaInfo = multimediaObject.getInfo();
-            return multimediaInfo;
-
-        } catch (InputFormatException e) {
-            e.printStackTrace();
-            return null;
-
-        }
-    }
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException, EncoderException {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
+
             Job job = new Job();
             jobIdRepository.save(job);
             String fileName = azureBlobService.upload(file);

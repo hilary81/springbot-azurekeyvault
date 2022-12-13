@@ -16,14 +16,17 @@ public class Job {
     }
 
     public void setId(Long id) {
+
         this.id = id;
     }
 
     public Double getFile_duration(Double l) {
+
         return file_duration;
     }
 
     public void setFile_duration(double file_duration) {
+
         this.file_duration = file_duration;
     }
 }
